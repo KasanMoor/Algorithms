@@ -12,22 +12,34 @@ void printArray( int array[] )
    cout << endl;
 }
 
-void quicksort( int a[], low, hi ) 
+int partition( int a[], int low, int hi )
 {
-   p = partition( a, low, hi );
-   quicksort( a, low, p-1 );
-   quicksort( a, p+1, hi );
-}
-
-int partition( int a[], low, hi )
-{
-   int pivot = a[hi];
-   i = low-1;
-   for( int j=low; j<hi; j++ ) {
-      if( a[j] < pivot ) {
-         i++;
-
+   //if( low < hi ) {
+      cout << "partitioning; low: " << low << " high: " << hi << endl;
+      int pivot = a[hi];
+      int i = low-1;
+      for( int j=low; j<hi; j++ ) {
+         if( a[j] <= pivot ) {
+            i++;
+	    int temp = a[i];
+	    a[i] = a[j];
+   	    a[j] = temp;
+         }
       }
+      int temp = a[i+1];
+      a[i+1] = a[hi];
+      a[hi] = temp;
+      return i+1;
+   //}
+}
+void quicksort( int a[], int low, int hi ) 
+{
+   if( low < hi ) {
+      int p = partition( a, low, hi );
+      cout << "quicksort; low: " << low << " hi: " << p-1 << endl;
+      quicksort( a, low, p-1 );
+      cout << "quicksort; low: " << p+1 << " hi: " << hi << endl;
+      quicksort( a, p+1, hi );
    }
 }
 
@@ -35,6 +47,6 @@ int main()
 {
    int array[n] = {20, 6, 8, 4, 26, 38, 35, 55, 1, 10 };
    printArray( array );
-   quicksort( array );
+   quicksort( array, 1, n-1 );
    printArray( array );
 }
