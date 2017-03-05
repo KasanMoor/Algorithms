@@ -51,8 +51,8 @@ pointstruct findMax( pointstruct pointlist[] )
 linestruct generateLine( pointstruct first, pointstruct second )
 {
    struct linestruct newline;
-   newline.a = second.y - first.y;
-   newline.b = first.x - second.x;
+   newline.a = first.y - second.y;
+   newline.b = second.x - first.x;
    newline.c = first.x*second.y - second.x*first.y;
    newline.point1 = first;
    newline.point2 = second;
@@ -80,37 +80,54 @@ double whichSide( linestruct line, pointstruct point )
 
 void quickHull( int direction, linestruct line, pointstruct pointList[] )
 {
+   cout << "quickHull on line: " 
+        << line.point1.x << ", " << line.point1.y << " "
+	<< line.point2.x << ", " << line.point2.y << " " << endl;
    int found = 0;
-   pointstruct furthest = {0};
+   pointstruct furthest;
    double furthestDistance;
    for( int i=0; i<n; i++ ) {
-      if( whichSide(line, pointList[i] ) == direction ) {
+      if( whichSide(line, pointList[i] ) == direction && pointList[i].isExtreme == 0 ) {
+         cout << "point: " << i << " is on the " << direction << " side and is "
+	      << distance( line, pointList[i] ) << " away." << endl;
          if( found ==0 ) {
 	    furthestDistance = distance( line, pointList[i] );
 	    furthest = pointList[i];
+	    pointList[i].isExtreme = 1;
 	    found = 1;
-	 }
-	 else if( distance( line, pointList[i] ) > furthestDistance ) {
+	    cout << "point " << i << " is the furthest at " << distance( line, pointList[i] ) << endl;
+	 } else if( distance( line, pointList[i] ) > furthestDistance ) {
 	    furthestDistance = distance( line, pointList[i] );
 	    furthest = pointList[i];
+	    pointList[i].isExtreme = 1;
+	    found = 1;
+	    cout << "point " << i << " is the furthest at " << distance( line, pointList[i] ) << endl;
 	 }
       }
-   }
+   }  
    if( found == 1 ) {
-      linestruct left = generateLine( line.first, furthest );
-      linestruct right = generateLine( furthest, line.second );
-      quickhull( -1, left, pointList );
-      quickhull( 1, right, pointList );
+      cout << "Point found: " << furthest.x << ", " << furthest.y << endl;
+      linestruct left = generateLine( line.point1, furthest );
+      linestruct right = generateLine( furthest, line.point2 );
+      quickHull( -1, left, pointList );
+      quickHull( 1, right, pointList );
+   } else {
+      cout << "no points" << endl;
    }
 }
 
 void quickHull( pointstruct pointList[] )
 {
    pointstruct min = findMin( pointList );
+   cout << min.x << ", " << min.y << endl;
    pointstruct max = findMax( pointList );
+   cout << max.x << ", " << max.y << endl;
    linestruct line = generateLine( min, max );
-   quickhull( -1, line, pointList );
-   quickhull( 1, line, pointList );
+   cout << "quickHull on line: " 
+        << line.point1.x << ", " << line.point1.y << " "
+	<< line.point2.x << ", " << line.point2.y << " " << endl;
+   quickHull( -1, line, pointList );
+   quickHull( 1, line, pointList );
 }
 
 
@@ -124,6 +141,8 @@ int main()
    pointList[4].x = 1; pointList[4].y = 4; pointList[4].isExtreme = 0;
    pointList[5].x = 2; pointList[5].y = 2; pointList[5].isExtreme = 0;
 
+   quickHull( pointList );
+/*
    //int minx = findMin( pointList );
    //int maxx = findMax( pointList );
    linestruct line = generateLine( pointList[4], pointList[3] );
@@ -139,7 +158,7 @@ int main()
    cout << "side of 1 from 0, 3: "  << whichSide( line, pointList[1] ) << endl;
    line = generateLine( pointList[0], pointList[4] );
    cout << "side of 1 from 0, 4: "  << whichSide( line, pointList[1] ) << endl;
-
+*/
 
 
 
@@ -164,11 +183,10 @@ int main()
          cout << result << endl;
       }
    }
-
-   for( int i=0; i<5; i++ ) {
+*/
+   for( int i=0; i<n; i++ ) {
       if( pointList[i].isExtreme == 1 ) {
          cout << "point is HULL: " <<pointList[i].x << " " << pointList[i].y << endl;
       }
    }
-   */
 }
