@@ -1,4 +1,10 @@
+// Brandon Brewster
+// CS395/MATH395-Spring2017-Assignment2-Question2
+
 #include <iostream>
+#include <time.h>
+#include <stdlib.h>
+#include <ctime>
 
 using namespace std;
 
@@ -49,10 +55,31 @@ void quicksort( int a[], int low, int hi )
    }
 }
 
+int* generateArray( int size )
+{
+   srand( time(NULL) );
+   int* array = new int[size];
+   for( int i=0; i<size; i++ ) {
+      array[i] = rand() % size;
+   }
+   return array;
+}
+
+void doOnSize( int size )
+{
+   int* array = generateArray(size);
+   //printArray( array );
+   int start_s = clock();
+   quicksort( array, 0, size-1 );
+   int stop_s=clock();
+   //printArray( array );
+   cout << "Shellsort time on size " << size 
+        << ": " << (stop_s-start_s)/double(CLOCKS_PER_SEC)*1000 << endl;
+}
+
 int main() 
 {
-   int array[n] = {20, 6, 8, 4, 26, 38, 35, 55, 1, 10 };
-   printArray( array );
-   quicksort( array, 0, n-1 );
-   printArray( array );
+   doOnSize( 100 );
+   doOnSize( 1000 );
+   doOnSize( 10000 );
 }
